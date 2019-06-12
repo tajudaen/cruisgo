@@ -1,0 +1,23 @@
+{
+  "name": "cruisgo",
+  "version": "1.0.0",
+  "description": "A car rental serve",
+  "main": "app.js",
+  "scripts": {
+    "test": "export NODE_ENV=test || SET \"NODE_ENV=test\" && mocha --timeout=15000 _test_/*.test.js",
+    "start": "node app.js",
+    "test-watch": "nodemon --exec \"npm test\""
+  },
+  "keywords": [],
+  "author": "Giwa Tajudeen",
+  "license": "ISC",
+  "devDependencies": {
+    "expect": "^24.8.0",
+    "mocha": "^6.1.4",
+    "supertest": "^4.0.2"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongoose": "^5.5.15"
+  }
+}
