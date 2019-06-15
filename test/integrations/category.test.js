@@ -5,7 +5,7 @@ const request = require('supertest');
 // Custom modules
 const { app } = require('../../app');
 const { Category } = require('../../models/category');
-const { seedCategories } = require('../seeds/seed');
+const { seedCategories, categories } = require('../seeds/seed');
 
 
 beforeEach(seedCategories);
@@ -18,6 +18,24 @@ describe('feat/category', () => {
                 .expect(200)
                 .expect(res => {
                     expect(res.body[0]).toHaveProperty('name');
+                })
+                .end(done);
+        });
+    });
+
+    describe('POST: create a category', (done) => {
+        it('should create a new category', (done) => {
+            const category = {
+                name: "Convertible"
+            };
+
+            request(app)
+                .post('/api/categories')
+                .send(category)
+                .expect(201)
+                .expect(res => {
+                    expect(res.body).toHaveProperty('_id');
+                    expect(res.body).toHaveProperty('name');
                 })
                 .end(done);
         });
