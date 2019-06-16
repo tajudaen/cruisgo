@@ -112,4 +112,28 @@ describe('feat/category', () => {
                 .end(done);
         });
     });
+
+    describe('DELETE:id category', () => {
+        it('should delete a category with a valid id', (done) => {
+            request(app)
+                .delete(`/api/categories/${categories[0]._id.toHexString()}`)
+                .expect(200)
+                .end(done);
+        });
+
+        it('should return 404 if category id doesnt exist', (done) => {
+            const categoryId = ObjectID().toHexString();
+            request(app)
+                .delete(`/api/categories/${categoryId}`)
+                .expect(404)
+                .end(done);
+        });
+
+        it('should return 400 if an invalid id is given', (done) => {
+            request(app)
+                .delete('/api/categories/1234')
+                .expect(400)
+                .end(done);
+        });
+    });
 });

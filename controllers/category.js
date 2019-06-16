@@ -72,3 +72,21 @@ exports.updateCategory = (req, res) => {
             res.status(400);
         });
 }
+
+exports.deleteCategory = (req, res) => {
+    const categoryId = req.params.id;
+
+    if (!ObjectID.isValid(categoryId)) {
+        return res.status(400).send();
+    }
+
+    Category.findByIdAndDelete({ _id: categoryId })
+        .then((category) => {
+            if (!category) {
+                return res.status(404).send();
+            }
+            res.send();
+        }).catch((err) => {
+            res.status(400);
+        });
+}
