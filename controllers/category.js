@@ -1,5 +1,6 @@
 // Packages
 const _ = require('lodash');
+const { ObjectID } = require('mongodb');
 
 // Custom modules
 const { Category } = require('./../models/category');
@@ -24,6 +25,25 @@ exports.postCategory = (req, res) => {
     category.save()
         .then((category) => {
             res.status(201).send(category);
+        }).catch((err) => {
+            res.status(400);
+        });
+}
+
+exports.getCategory = (req, res) => {
+
+    var categoryId = req.params.id;
+
+    if (!ObjectID.isValid(categoryId)) {
+        return res.status(400).send();
+    }
+
+    Category.findOne({_id: categoryId})
+        .then((category) => {
+            if (!category) {
+                return res.status(404).send({ msg: "category not found" });
+            }
+            res.send(category);
         }).catch((err) => {
             res.status(400);
         });

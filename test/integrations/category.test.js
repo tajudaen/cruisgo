@@ -1,6 +1,9 @@
 // Packages
 const expect = require("expect");
 const request = require('supertest');
+const {
+    ObjectID
+} = require("mongodb");
 
 // Custom modules
 const { app } = require('../../app');
@@ -48,4 +51,38 @@ describe('feat/category', () => {
                 .end(done);
         });
     });
+
+    describe('GET:id category', () => {
+        it('should return a category when a valid id is given', (done) => {
+            request(app)
+                .get(`/api/categories/${categories[0]._id.toHexString()}`)
+                .expect(200)
+                .expect(res => {
+                    expect(res.body).toHaveProperty('_id');
+                    expect(res.body._id).toBe(categories[0]._id.toHexString());
+                })
+                .end(done);
+        });
+
+        it('should return 404 if invalid id is given', (done) => {
+            request(app)
+                .get('/api/categories/1234')
+                .expect(400)
+                .end(done);
+        });
+
+        it('should return 404 if no category is found when given a valid id', (done) => {
+            const categoryId = ObjectID().toHexString();
+            request(app)
+                .get(`/api/categories/${categoryId}`)
+                .expect(404)
+                .expect(res => {
+                    expect(res.body).toHaveProperty('msg');
+                })
+                .end(done);
+
+        });
+    });
+
+    
 });
