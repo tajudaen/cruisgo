@@ -32,13 +32,37 @@ exports.postCategory = (req, res) => {
 
 exports.getCategory = (req, res) => {
 
-    var categoryId = req.params.id;
+    const categoryId = req.params.id;
 
     if (!ObjectID.isValid(categoryId)) {
         return res.status(400).send();
     }
 
     Category.findOne({_id: categoryId})
+        .then((category) => {
+            if (!category) {
+                return res.status(404).send({ msg: "category not found" });
+            }
+            res.send(category);
+        }).catch((err) => {
+            res.status(400);
+        });
+}
+
+exports.updateCategory = (req, res) => {
+    const categoryId = req.params.id;
+    const body = _.pick(req.body, ['name']);
+
+    if (!ObjectID.isValid(categoryId)) {
+        return res.status(400).send();
+    }
+
+    const { error } = validateCategory(req.body);
+    if (error) {
+        return res.status(400).send(error.details[0].message);
+    }
+
+    Category.findOneAndUpdate({ _id: categoryId }, { $set: body }, { new: true })
         .then((category) => {
             if (!category) {
                 return res.status(404).send({ msg: "category not found" });

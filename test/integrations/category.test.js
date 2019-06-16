@@ -84,5 +84,32 @@ describe('feat/category', () => {
         });
     });
 
-    
+    describe('PUT:id category', () => {
+        it('should update an existing category', (done) => {
+            request(app)
+                .put(`/api/categories/${categories[0]._id.toHexString()}`)
+                .send({name: "updatedCategory"})
+                .expect(200)
+                .expect(res => {
+                    expect(res.body.name).toBe("updatedCategory");
+                })
+                .end(done);
+        });
+
+        it('should return 400 if an invalid id is given', (done) => {
+            request(app)
+                .get('/api/categories/1234')
+                .expect(400)
+                .end(done);
+        });
+
+        it('should return 404 if record doesnt exist for a valid id', (done) => {
+            const categoryId = ObjectID().toHexString();
+            request(app)
+                .get(`/api/categories/${categoryId}`)
+                .send({name: "updatedCategory"})
+                .expect(404)
+                .end(done);
+        });
+    });
 });
