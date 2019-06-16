@@ -3,6 +3,7 @@ const _ = require('lodash');
 
 // Custom modules
 const { Category } = require('./../models/category');
+const { validateCategory } = require('./../utils/validator');
 
 exports.getCategories = (req, res) => {
     Category.find()
@@ -14,6 +15,10 @@ exports.getCategories = (req, res) => {
 }
 
 exports.postCategory = (req, res) => {
+    const { error } = validateCategory(req.body);
+    if (error) {
+        return res.status(400).send(error.details[0].message);
+    }
     const category = new Category({ name: req.body.name });
 
     category.save()

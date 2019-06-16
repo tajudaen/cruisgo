@@ -39,5 +39,13 @@ describe('feat/category', () => {
                 })
                 .end(done);
         });
+
+        it('should return 400 if required field is missing', (done) => {
+            request(app)
+                .post('/api/categories')
+                .send({})
+                .expect(400)
+                .end(done);
+        });
     });
 });
