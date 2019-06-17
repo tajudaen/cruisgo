@@ -9,6 +9,7 @@ const app = express();
 // Custom modules
 const { mongoose } = require('./database/mongoose');
 const categoryRoutes = require('./routes/category');
+const authenticationRoutes = require('./routes/authentication');
 
 // Packages middlewares
 app.use(bodyParser.json());
@@ -17,6 +18,7 @@ app.use(bodyParser.json());
 
 // Routes
 app.use('/api/categories', categoryRoutes);
+app.use('/api', authenticationRoutes);
 
 app.listen(process.env.PORT, () => {
     console.log(`Started on port ${process.env.PORT}`);

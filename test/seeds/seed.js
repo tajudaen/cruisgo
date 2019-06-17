@@ -3,6 +3,7 @@ const { ObjectID } = require('mongodb');
 
 // Custom modules
 const { Category } = require('./../../models/category');
+const { User } = require('./../../models/user');
 
 const categories = [{
         _id: new ObjectID(),
@@ -18,6 +19,22 @@ const categories = [{
     }
 ];
 
+const users = [{
+        _id: new ObjectID(),
+        name: "Jane Doe",
+        email: "dummy1@mail.com",
+        password: "password",
+        role: 1
+    },
+    {
+        _id: new ObjectID(),
+        name: "Rex Fox",
+        email: "dummy@example.com",
+        password: "password",
+        role: 2
+    }
+]
+
 const seedCategories = done => {
     Category.deleteMany({})
         .then(() => {
@@ -26,4 +43,11 @@ const seedCategories = done => {
         .then(() => done());
 };
 
-module.exports = {categories, seedCategories};
+const seedUsers = done => {
+    User.deleteMany({})
+        .then(() => {
+            User.insertMany(users);
+        }).then(() => done());
+}
+
+module.exports = {categories, seedCategories, users, seedUsers};
