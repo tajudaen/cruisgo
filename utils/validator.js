@@ -9,3 +9,23 @@ exports.validateCategory = (category) => {
 
     return Joi.validate(category, schema);
 }
+
+exports.validateUser = (user) => {
+    const schema = {
+        name: Joi.string().min(5).max(50).required(),
+        email: Joi.string().min(5).max(255).required().email(),
+        password: Joi.string().min(5).max(255).required(),
+        role: Joi.number().required()
+    };
+
+    return Joi.validate(user, schema);
+};
+
+exports.validateLoginCredentials = (req) => {
+    const schema = {
+        email: Joi.string().min(5).max(255).required().email(),
+        password: Joi.string().min(5).max(255).required()
+    };
+
+    return Joi.validate(req, schema);
+};
