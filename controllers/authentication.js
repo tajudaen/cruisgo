@@ -57,7 +57,7 @@ exports.login = (req, res) => {
             if (!status) {
                 return res.status(400).send("Invalid email or password.");
             }
-            
+
             const token = user.generateAuthToken();
             res.header('x-auth-token', token).send(token);
         }).catch((err) => {
