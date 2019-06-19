@@ -26,7 +26,7 @@ describe('feat/category', () => {
         });
     });
 
-    describe('POST: create a category', (done) => {
+    describe('POST: create a category', () => {
         it('should create a new category', (done) => {
             const category = {
                 name: "Convertible"
