@@ -38,14 +38,42 @@ describe('feat/registration-login', () => {
                 .end(done);
         });
 
-        it("should not create user if email in use", done => {
+        // it("should not create user if email in use", done => {
+        //     request(app)
+        //         .post('/api/register')
+        //         .send({email: users[0].email, password: "password1"})
+        //         .expect(400)
+        //         .end(done);
+        // });
+    });
+
+    describe('Login', () => {
+        it('should login user and return auth token', done => {
             request(app)
-                .post('/api/register')
-                .send(users[0])
+                .post('/api/login')
+                .send({
+                    email: users[1].email,
+                    password: "password"
+                })
+                .expect(200)
+                .expect(res => {
+                    expect(res.headers["x-auth-token"]).toBeTruthy();
+                })
+                .end(done);
+        });
+
+        it('should reject invalid login', done => {
+            request(app)
+                .post('/api/login')
+                .send({
+                    email: users[1].email,
+                    password: users[1].password + 'fake'
+                })
                 .expect(400)
+                .expect(res => {
+                    expect(res.headers["x-auth"]).toBeFalsy();
+                })
                 .end(done);
         });
     });
-
-    
 });
