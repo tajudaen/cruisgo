@@ -43,12 +43,38 @@ userSchema.methods.generateAuthToken = function () {
 userSchema.pre('save', function (next) {
     const user = this;
     
-    bcrypt.genSalt(parseInt(process.env.SALT_ROUND), (err, salt) => {
-        bcrypt.hash(user.password, salt, (err, hash) => {
-            user.password = hash;
-            next();
+    if (user.isModified('password')) {
+        bcrypt.genSalt(parseInt(process.env.SALT_ROUND), (err, salt) => {
+            bcrypt.hash(user.password, salt, (err, hash) => {
+                user.password = hash;
+                next();
+            });
+        });
+    } else {
+        next();
+    }
+});
+
+userSchema.statics.findByCredentials = function (email, password) {
+    var User = this;
+
+    return User.findOne({
+        email
+    }).then((user) => {
+        if (!user) {
+            return Promise.reject();
+        }
+
+        return new Promise((resolve, reject) => {
+            bcrypt.compare(password, user.password, (err, res) => {
+                if (res) {
+                    resolve(user);
+                } else {
+                    reject("Invalid login details");
+                }
+            });
         });
     });
-});
+};
 
 exports.User = mongoose.model('User', userSchema);

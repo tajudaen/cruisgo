@@ -42,25 +42,14 @@ exports.login = (req, res) => {
     if (error) {
         return res.status(400).send(error.details[0].message);
     }
-    let user;
-    User.findOne({
-            email: body.email
+    
+    User.findByCredentials(body.email, body.password)
+        .then((user) => {
+            return user.generateAuthToken();
         })
-        .then((result) => {
-            if (!result) {
-                return res.status(400).send("Invalid email or password.");
-            }
-            user = result;
-            
-            return bcrypt.compare(body.password, result.password);
-        }).then((status) => {
-            if (!status) {
-                return res.status(400).send("Invalid email or password.");
-            }
-
-            const token = user.generateAuthToken();
+        .then(token => {
             res.header('x-auth-token', token).send(token);
         }).catch((err) => {
-            res.status(400);
+            res.status(400).send();
         });
 }
