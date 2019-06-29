@@ -30,7 +30,7 @@ const userSchema = new mongoose.Schema({
         trim: true
     },
     role: {
-        type: Number,
+        type: String,
         require: true
     }
 });
