@@ -1,19 +1,22 @@
 // Packages
 const expect = require("expect");
 const request = require('supertest');
-const {
-    ObjectID
-} = require("mongodb");
+const { ObjectID } = require("mongodb");
 
 // Custom modules
 const { app } = require('../../app');
-const { Category } = require('../../models/category');
+const { User } = require('../../models/user');
 const { seedCategories, categories } = require('../seeds/seed');
 
 
 beforeEach(seedCategories);
 
 describe('feat/category', () => {
+    let token;
+    beforeEach(() => {
+        const user = { _id: ObjectID().toHexString(), role: 1 };
+        token = new User(user).generateAuthToken();
+    });
     describe('GET: all categories', () => {
         it('should return all categories', (done) => {
             request(app)
@@ -27,13 +30,14 @@ describe('feat/category', () => {
     });
 
     describe('POST: create a category', () => {
-        it('should create a new category', (done) => {
+        it('should create a new category created by an authenticated user', (done) => {
             const category = {
                 name: "Convertible"
             };
 
             request(app)
                 .post('/api/categories')
+                .set('x-auth-token', token)
                 .send(category)
                 .expect(201)
                 .expect(res => {
@@ -42,10 +46,53 @@ describe('feat/category', () => {
                 })
                 .end(done);
         });
+        
+        it('should return 403 if an unauthorized user try to create a category', (done) => {
+            const category = {
+                name: "Convertible"
+            };
+
+            let unauthorizedUserToken = new User().generateAuthToken();
+
+            request(app)
+                .post('/api/categories')
+                .set('x-auth-token', unauthorizedUserToken)
+                .send(category)
+                .expect(403)
+                .end(done);
+        });
+
+
+
+        it('should return a 401 if no token is given', (done) => {
+            const category = {
+                name: "Convertible"
+            };
+
+            request(app)
+                .post('/api/categories')
+                .send(category)
+                .expect(401)
+                .end(done);
+        });
+
+        it('should return a 400 if an invalid token is given', (done) => {
+            const category = {
+                name: "Convertible"
+            };
+
+            request(app)
+                .post('/api/categories')
+                .set('x-auth-token', '1234')
+                .send(category)
+                .expect(400)
+                .end(done);
+        });
 
         it('should return 400 if required field is missing', (done) => {
             request(app)
                 .post('/api/categories')
+                .set('x-auth-token', token)
                 .send({})
                 .expect(400)
                 .end(done);
@@ -88,6 +135,7 @@ describe('feat/category', () => {
         it('should update an existing category', (done) => {
             request(app)
                 .put(`/api/categories/${categories[0]._id.toHexString()}`)
+                .set('x-auth-token', token)
                 .send({name: "updatedCategory"})
                 .expect(200)
                 .expect(res => {
@@ -99,6 +147,7 @@ describe('feat/category', () => {
         it('should return 400 if an invalid id is given', (done) => {
             request(app)
                 .get('/api/categories/1234')
+                .set('x-auth-token', token)
                 .expect(400)
                 .end(done);
         });
@@ -107,6 +156,7 @@ describe('feat/category', () => {
             const categoryId = ObjectID().toHexString();
             request(app)
                 .get(`/api/categories/${categoryId}`)
+                .set('x-auth-token', token)
                 .send({name: "updatedCategory"})
                 .expect(404)
                 .end(done);
@@ -117,6 +167,7 @@ describe('feat/category', () => {
         it('should delete a category with a valid id', (done) => {
             request(app)
                 .delete(`/api/categories/${categories[0]._id.toHexString()}`)
+                .set('x-auth-token', token)
                 .expect(200)
                 .end(done);
         });
@@ -125,6 +176,7 @@ describe('feat/category', () => {
             const categoryId = ObjectID().toHexString();
             request(app)
                 .delete(`/api/categories/${categoryId}`)
+                .set('x-auth-token', token)
                 .expect(404)
                 .end(done);
         });
@@ -132,6 +184,7 @@ describe('feat/category', () => {
         it('should return 400 if an invalid id is given', (done) => {
             request(app)
                 .delete('/api/categories/1234')
+                .set('x-auth-token', token)
                 .expect(400)
                 .end(done);
         });
