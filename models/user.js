@@ -29,14 +29,14 @@ const userSchema = new mongoose.Schema({
         minlength: 6,
         trim: true
     },
-    role: {
-        type: String,
+    permissions: {
+        type: [String],
         require: true
     }
 });
 
 userSchema.methods.generateAuthToken = function () {
-    const token = jwt.sign({ _id: this._id, role: this.role }, process.env.JWT_SECRET);
+    const token = jwt.sign({ _id: this._id, permissions: this.permissions }, process.env.JWT_SECRET);
     return token;
 }
 

@@ -16,7 +16,7 @@ describe('feat/registration-login', () => {
                 name: "Giwa Tajudeen",
                 email: "dev@mail.com",
                 password: "password",
-                role: 1
+                permissions: ["create", "read", "update", "delete"]
             }
             request(app)
                 .post('/api/register')

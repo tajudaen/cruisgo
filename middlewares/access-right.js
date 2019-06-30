@@ -1,7 +1,10 @@
-exports.access = (req, res, next) => {
-    if (req.user.role != 1) {
+exports.createAccess = (req, res, next) => {
+    const permissions = req.user.permissions;
+
+    if (!permissions.includes("create")) {
         return res.status(403).send('Access denied');
-    } else {
-        next();
     }
+    
+    next();
+    
 }

@@ -14,7 +14,7 @@ beforeEach(seedCategories);
 describe('feat/category', () => {
     let token;
     beforeEach(() => {
-        const user = { _id: ObjectID().toHexString(), role: 1 };
+        const user = { _id: ObjectID().toHexString(), permissions: ["create", "read", "update", "delete"] };
         token = new User(user).generateAuthToken();
     });
     describe('GET: all categories', () => {

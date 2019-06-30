@@ -3,14 +3,14 @@ const expect = require('expect');
 const sinon = require('sinon');
 
 const { User } = require('../../../models/user');
-const { access } = require('../../../middlewares/access-right');
+const { createAccess } = require('../../../middlewares/access-right');
 
 describe('access middleware', () => {
-    it('should return 403 if user role is not equal to 1', () => {
+    it('should return 403 if user doesnt have necessary permissions to create', () => {
 
         const req = {
             user: {
-                role: sinon.stub().returns(12)
+                permissions: []
             }
         };
 
@@ -25,8 +25,8 @@ describe('access middleware', () => {
 
         const next = sinon.stub();
 
-        access(req, res, next);
-        
+        createAccess(req, res, next);
+
         expect(res.status.calledWith(403)).toBeTruthy();
         expect(res.send.calledWith('Access denied')).toBeTruthy();
     });
