@@ -24,14 +24,14 @@ const users = [{
         name: "Jane Doe",
         email: "dummy1@mail.com",
         password: "password",
-        role: 1
+        permissions: ["create", "read", "update", "delete"]
     },
     {
         _id: new ObjectID(),
         name: "Rex Fox",
         email: "dummy@example.com",
         password: "password",
-        role: 2
+        permissions: ["read"]
     }
 ]
 

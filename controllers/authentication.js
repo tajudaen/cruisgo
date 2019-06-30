@@ -7,7 +7,7 @@ const { User } = require('./../models/user');
 const { validateUser, validateLoginCredentials } = require('./../utils/validator');
 
 exports.register = (req, res) => {
-    const body = _.pick(req.body, ["name", "email", "password", "role"]);
+    const body = _.pick(req.body, ["name", "email", "password", "permissions"]);
 
     const { error } = validateUser(body);
     if (error) {
