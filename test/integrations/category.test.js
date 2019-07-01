@@ -30,7 +30,7 @@ describe('feat/category', () => {
     });
 
     describe('POST: create a category', () => {
-        it('should create a new category created by an authenticated user', (done) => {
+        it('should create a new category created by an authenticated user with permission to create', (done) => {
             const category = {
                 name: "Convertible"
             };
@@ -46,8 +46,23 @@ describe('feat/category', () => {
                 })
                 .end(done);
         });
+
+        it('should not create a new category created by an authenticated user without permission to create', (done) => {
+            const category = {
+                name: "Convertible"
+            };
+
+            const user = { _id: ObjectID().toHexString(), permissions: ["read"] };
+            const myToken = new User(user).generateAuthToken();
+            request(app)
+                .post('/api/categories')
+                .set('x-auth-token', myToken)
+                .send(category)
+                .expect(403)
+                .end(done);
+        });
         
-        it('should return 403 if an unauthorized user try to create a category', (done) => {
+        it('should return 403 if a user with an unverified token try to create a category', (done) => {
             const category = {
                 name: "Convertible"
             };
@@ -61,8 +76,6 @@ describe('feat/category', () => {
                 .expect(403)
                 .end(done);
         });
-
-
 
         it('should return a 401 if no token is given', (done) => {
             const category = {
@@ -100,9 +113,10 @@ describe('feat/category', () => {
     });
 
     describe('GET:id category', () => {
-        it('should return a category when a valid id is given', (done) => {
+        it('should return a category when a valid id is given by an authenticated and authorized user', (done) => {
             request(app)
                 .get(`/api/categories/${categories[0]._id.toHexString()}`)
+                .set('x-auth-token', token)
                 .expect(200)
                 .expect(res => {
                     expect(res.body).toHaveProperty('_id');
@@ -111,9 +125,38 @@ describe('feat/category', () => {
                 .end(done);
         });
 
+        it('should return a 403 a user without permission to read try to read', (done) => {
+            const user = {
+                _id: ObjectID().toHexString(),
+                permissions: []
+            };
+            const myToken = new User(user).generateAuthToken();
+           request(app)
+               .get(`/api/categories/${categories[0]._id.toHexString()}`)
+               .set('x-auth-token', myToken)
+               .expect(403)
+               .end(done);
+        });
+
+        it('should return 403 if a user with an unverified token try to create a category', (done) => {
+            const category = {
+                name: "Convertible"
+            };
+
+            let unauthorizedUserToken = new User().generateAuthToken();
+
+            request(app)
+                .post('/api/categories')
+                .set('x-auth-token', unauthorizedUserToken)
+                .send(category)
+                .expect(403)
+                .end(done);
+        });
+
         it('should return 404 if invalid id is given', (done) => {
             request(app)
                 .get('/api/categories/1234')
+                .set('x-auth-token', token)
                 .expect(400)
                 .end(done);
         });
@@ -122,6 +165,7 @@ describe('feat/category', () => {
             const categoryId = ObjectID().toHexString();
             request(app)
                 .get(`/api/categories/${categoryId}`)
+                .set('x-auth-token', token)
                 .expect(404)
                 .expect(res => {
                     expect(res.body).toHaveProperty('msg');
@@ -141,6 +185,20 @@ describe('feat/category', () => {
                 .expect(res => {
                     expect(res.body.name).toBe("updatedCategory");
                 })
+                .end(done);
+        });
+
+        it('should not update a category by an authenticated user without permission to update', (done) => {
+            const user = {
+                _id: ObjectID().toHexString(),
+                permissions: ["read"]
+            };
+            const myToken = new User(user).generateAuthToken();
+            request(app)
+                .put(`/api/categories/${categories[0]._id.toHexString()}`)
+                .set('x-auth-token', myToken)
+                .send({name: "updatedCategory"})
+                .expect(403)
                 .end(done);
         });
 
@@ -169,6 +227,19 @@ describe('feat/category', () => {
                 .delete(`/api/categories/${categories[0]._id.toHexString()}`)
                 .set('x-auth-token', token)
                 .expect(200)
+                .end(done);
+        });
+
+        it('should not delete a category by an authenticated user without permission to update', (done) => {
+            const user = {
+                _id: ObjectID().toHexString(),
+                permissions: ["read"]
+            };
+            const myToken = new User(user).generateAuthToken();
+            request(app)
+                .delete(`/api/categories/${categories[0]._id.toHexString()}`)
+                .set('x-auth-token', myToken)
+                .expect(403)
                 .end(done);
         });
 
