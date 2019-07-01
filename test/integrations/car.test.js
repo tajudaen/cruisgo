@@ -38,7 +38,7 @@ describe('feat/car', () => {
                 numberInStock: 5,
                 dailyRentalRate: 40,
                 categoryId: categories[1]._id.toHexString(),
-                details: {brand: "Ford", model: "2015", color: "orange"}
+                details: { brand: "Ford", model: "2015", color: "orange" }
             };
 
             request(app)
@@ -71,7 +71,7 @@ describe('feat/car', () => {
                 numberInStock: 5,
                 dailyRentalRate: 40,
                 categoryId: new ObjectID().toHexString(),
-                details: {brand: "Ford", model: "2015", color: "orange"}
+                details: { brand: "Ford", model: "2015", color: "orange" }
             };
 
             request(app)
@@ -92,5 +92,20 @@ describe('feat/car', () => {
                 .expect(400)
                 .end(done);
         });
-    })
+    });
+
+    describe('GET:id car', () => {
+        it('should return a car when given a valid Id', (done) => {
+            request(app)
+                .get(`/api/cars/${cars[0]._id.toHexString()}`)
+                .set('x-auth-token', token)
+                .expect(200)
+                .expect(res => {
+                    expect(res.body).toHaveProperty('_id');
+                    expect(res.body._id).toBe(cars[0]._id.toHexString());
+                    expect(res.body.category).toHaveProperty('name');
+                })
+                .end(done);
+        });
+    });
 });

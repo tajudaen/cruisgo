@@ -50,3 +50,23 @@ exports.postCar = (req, res) => {
     
 }
 
+exports.getCar = (req, res) => {
+
+    const carId = req.params.id;
+
+    if (!ObjectID.isValid(carId)) {
+        return res.status(400).send();
+    }
+
+    Car.findOne({_id: carId})
+        .then((car) => {
+            if (!car) {
+                return res.status(404).send({ msg: "car not found" });
+            }
+            res.send(car);
+        }).catch((err) => {
+            res.status(400);
+        });
+}
+
+
