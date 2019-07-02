@@ -107,5 +107,23 @@ describe('feat/car', () => {
                 })
                 .end(done);
         });
+
+        it('should return 400 when given an invalid Id', (done) => {
+            request(app)
+                .get('/api/cars/1234')
+                .set('x-auth-token', token)
+                .expect(400)
+                .end(done);
+        });
+        
+        it('should return 400 when given an valid Id that does not exist', (done) => {
+            const Id = new ObjectID().toHexString();
+
+            request(app)
+                .get(`/api/cars/${Id}`)
+                .set('x-auth-token', token)
+                .expect(404)
+                .end(done);
+        });
     });
 });

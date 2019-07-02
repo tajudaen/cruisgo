@@ -68,5 +68,3 @@ exports.getCar = (req, res) => {
             res.status(400);
         });
 }
-
-
