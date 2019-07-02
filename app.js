@@ -10,6 +10,7 @@ const app = express();
 const { mongoose } = require('./database/mongoose');
 const categoryRoutes = require('./routes/category');
 const authenticationRoutes = require('./routes/authentication');
+const carRoutes = require('./routes/car');
 
 // Packages middlewares
 app.use(bodyParser.json());
@@ -18,6 +19,7 @@ app.use(bodyParser.json());
 
 // Routes
 app.use('/api/categories', categoryRoutes);
+app.use('/api/cars', carRoutes);
 app.use('/api', authenticationRoutes);
 
 app.listen(process.env.PORT, () => {

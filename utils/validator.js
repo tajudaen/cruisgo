@@ -1,5 +1,6 @@
 // Packages
 const Joi = require('joi');
+Joi.objectId = require('joi-objectid')(Joi);
 
 
 exports.validateCategory = (category) => {
@@ -28,4 +29,20 @@ exports.validateLoginCredentials = (req) => {
     };
 
     return Joi.validate(req, schema);
+};
+
+exports.validateCar = (car) => {
+    const schema = {
+        name: Joi.string().min(5).max(50).required(),
+        numberInStock: Joi.number().min(0).required(),
+        dailyRentalRate: Joi.number().min(0).required(),
+        categoryId: Joi.objectId().required(),
+        details: Joi.object().keys({
+            brand: Joi.string().required(),
+            model: Joi.string().required(),
+            color: Joi.string().required()
+        })
+    };
+
+    return Joi.validate(car, schema);
 };
