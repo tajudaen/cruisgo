@@ -126,4 +126,45 @@ describe('feat/car', () => {
                 .end(done);
         });
     });
+
+    describe('PUT:id car', () => {
+        it('should update a car with a valid ObjectID', (done) => {
+
+            request(app)
+                .put(`/api/cars/${cars[0]._id.toHexString()}`)
+                .set('x-auth-token', token)
+                .send({name : "updatedCar"})
+                .expect(204)
+                .end(done);
+        });
+    });
+
+    describe("DELETE:id car", () => {
+        it("should delete a car", done => {
+
+            request(app)
+                .delete(`/api/cars/${cars[0]._id.toHexString()}`)
+                .set('x-auth-token', token)
+                .expect(202)
+                .end(done);
+        });
+
+        it('should return a 404 if car is not found', done => {
+            const carID = new ObjectID().toHexString();
+
+            request(app)
+                .delete(`/api/cars/${carID}`)
+                .set('x-auth-token', token)
+                .expect(404)
+                .end(done);
+        });
+
+        it('should return a 404 if car id is not valid', done => {
+            request(app)
+                .delete('/api/cars/12345')
+                .set('x-auth-token', token)
+                .expect(404)
+                .end(done);
+        });
+    });
 });
