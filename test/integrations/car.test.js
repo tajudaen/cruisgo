@@ -126,4 +126,17 @@ describe('feat/car', () => {
                 .end(done);
         });
     });
+
+    describe('PUT:id car', () => {
+        it('should update a car with a valid ObjectID', (done) => {
+
+            request(app)
+                .put(`/api/cars/${cars[0]._id.toHexString()}`)
+                .set('x-auth-token', token)
+                .send({name : "updatedCar"})
+                .expect(204)
+                .end(done);
+        });
+
+    });
 });
