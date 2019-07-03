@@ -119,3 +119,21 @@ exports.updateCar = (req, res) => {
 
     
 }
+
+exports.deleteCar = (req, res) => {
+    const carId = req.params.id;
+
+    if (!ObjectID.isValid(carId)) {
+        return res.status(404).send();
+    }
+
+    Car.findByIdAndDelete({ _id: carId })
+        .then((car) => {
+            if (!car) {
+                return res.status(404).send();
+            }
+            res.status(202).send();
+        }).catch((err) => {
+            res.status(400);
+        });
+}
