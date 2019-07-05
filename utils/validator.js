@@ -46,3 +46,12 @@ exports.validateCar = (car) => {
 
     return Joi.validate(car, schema);
 };
+
+exports.validateCustomer = (customer) => {
+    const schema = {
+        name: Joi.string().min(3).max(50).required(),
+        phone: Joi.string().min(10).required(),
+    };
+
+    return Joi.validate(customer, schema);
+}
