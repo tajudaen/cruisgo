@@ -12,6 +12,7 @@ const categoryRoutes = require('./routes/category');
 const authenticationRoutes = require('./routes/authentication');
 const carRoutes = require('./routes/car');
 const customerRoutes = require('./routes/customer');
+const rentalRoutes = require('./routes/rental');
 
 // Packages middlewares
 app.use(bodyParser.json());
@@ -22,6 +23,7 @@ app.use(bodyParser.json());
 app.use('/api/categories', categoryRoutes);
 app.use('/api/cars', carRoutes);
 app.use('/api/customers', customerRoutes);
+app.use('/api/rentals', rentalRoutes);
 app.use('/api', authenticationRoutes);
 
 app.listen(process.env.PORT, () => {
