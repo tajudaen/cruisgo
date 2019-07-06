@@ -5,7 +5,6 @@ const { ObjectID } = require("mongodb");
 
 // Custom modules
 const { app } = require('../../app');
-const { Customer } = require('../../models/customer');
 const { seedCustomers, customers } = require('../seeds/seed');
 
 beforeEach(seedCustomers);
@@ -34,10 +33,10 @@ describe('feat/customer', () => {
                 .post('/api/customers')
                 .send(customer)
                 .expect(200)
-                // .expect(res => {
-                //     expect(res.body).toHaveProperty('_id');
-                //     expect(res.body).toHaveProperty('phone');
-                // })
+                .expect(res => {
+                    expect(res.body).toHaveProperty('_id');
+                    expect(res.body).toHaveProperty('phone');
+                })
                 .end(done);
         });
 
@@ -46,6 +45,35 @@ describe('feat/customer', () => {
                 .post('/api/customers')
                 .send({})
                 .expect(400)
+                .end(done);
+        });
+    });
+
+    describe('PUT:id customer', () => {
+        it('should update a customer with a valid id', (done) => {
+            request(app)
+                .put(`/api/customers/${customers[0]._id.toHexString()}`)
+                .send({ phone: "01234554321" })
+                .expect(200)
+                .end(done);
+        });
+
+        it('should return a 400 if an invalid id is given', (done) => {
+            request(app)
+                .put('/api/customers/1234')
+                .send({ phone: "01234554321" })
+                .expect(400)
+                .end(done);
+        });
+
+        it('should return a 404 if an id which doesnt exist', (done) => {
+
+            const Id = new ObjectID().toHexString();
+
+            request(app)
+                .put(`/api/customers/${Id}`)
+                .send({ phone: "01234554321" })
+                .expect(404)
                 .end(done);
         });
     });
