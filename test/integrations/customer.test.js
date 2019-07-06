@@ -22,6 +22,34 @@ describe('feat/customer', () => {
         });
     });
 
+    describe('GET:id customer', () => {
+        it('should return the customer with the valid id', (done) => {
+            request(app)
+                .get(`/api/customers/${customers[0]._id.toHexString()}`)
+                .expect(200)
+                .expect(res => {
+                    expect(res.body).toHaveProperty('name');
+                })
+                .end(done);
+        });
+
+        it('should return 400 if an invalid id is given', (done) => {
+            request(app)
+                .get('/api/customers/1234')
+                .expect(400)
+                .end(done);
+        });
+        
+        it('should return 404 if a valid id of a non-existing cusstomer is given', (done) => {
+            const ID = new ObjectID().toHexString();
+
+            request(app)
+                .get(`/api/customers/${ID}`)
+                .expect(404)
+                .end(done);
+        });
+    });
+
     describe('POST: customer', () => {
         it('should create a customer', (done) => {
             const customer = {

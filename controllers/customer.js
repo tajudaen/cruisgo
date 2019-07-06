@@ -15,7 +15,24 @@ exports.getCustomers = (req, res) => {
         });
 };
 
+exports.getCustomer = (req, res) => {
+    const customerId = req.params.id;
 
+    if (!ObjectID.isValid(customerId)) {
+        return res.status(400).send();
+    }
+
+    Customer.findById(customerId)
+        .then((customer) => {
+            if (!customer) {
+                return res.status(404).send("Customer not found");
+            }
+
+            res.send(customer);
+        }).catch((err) => {
+            res.status(400);
+        });
+};
 
 exports.postCustomer = (req, res) => {
     const { error } = validateCustomer(req.body);
@@ -69,3 +86,4 @@ exports.updateCustomer = (req, res) => {
         });
 
 };
+
