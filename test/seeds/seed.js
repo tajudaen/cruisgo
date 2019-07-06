@@ -6,6 +6,7 @@ const { Category } = require('./../../models/category');
 const { User } = require('./../../models/user');
 const { Car } = require('./../../models/car');
 const { Customer } = require('./../../models/customer');
+const { Rental } = require('./../../models/rental');
 
 const categories = [{
         _id: new ObjectID(),
@@ -66,6 +67,35 @@ const customers = [{
     phone: "0987654321"
 }];
 
+const rentals = [{
+    _id: new ObjectID(),
+    customer: customers[0],
+    car: {
+        _id: cars[0]._id,
+        name: cars[0].name,
+        dailyRentalRate: cars[0].dailyRentalRate
+    },
+    rentalFee: 50
+}, {
+    _id: new ObjectID(),
+    customer: customers[0],
+    car: {
+        _id: cars[1]._id,
+        name: cars[1].name,
+        dailyRentalRate: cars[1].dailyRentalRate
+    },
+    rentalFee: 60
+}, {
+    _id: new ObjectID(),
+    customer: customers[1],
+    car: {
+        _id: cars[0]._id,
+        name: cars[0].name,
+        dailyRentalRate: cars[0].dailyRentalRate
+    },
+    rentalFee: 50
+}];
+
 const seedCategories = done => {
     Category.deleteMany({})
         .then(() => {
@@ -98,4 +128,11 @@ const seedCustomers = done => {
         }).then(() => done());
 }
 
-module.exports = {categories, seedCategories, users, seedUsers, seedCars, cars, seedCustomers, customers};
+const seedRentals = done => {
+    Rental.deleteMany({})
+        .then(() => {
+            Rental.insertMany(rentals);
+        }).then(() => done());
+}
+
+module.exports = {categories, seedCategories, users, seedUsers, seedCars, cars, seedCustomers, customers, seedRentals, rentals};

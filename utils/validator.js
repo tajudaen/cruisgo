@@ -55,3 +55,12 @@ exports.validateCustomer = (customer) => {
 
     return Joi.validate(customer, schema);
 }
+
+exports.validateRental = (rental) => {
+    const schema = {
+        customerId: Joi.objectId().required(),
+        carId: Joi.objectId().required()
+    };
+
+    return Joi.validate(rental, schema);
+}
