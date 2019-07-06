@@ -1,3 +1,7 @@
+// Packages
+const _ = require('lodash');
+const { ObjectID } = require('mongodb');
+
 //custom module
 const { Customer } = require('./../models/customer');
 const { validateCustomer } = require('./../utils/validator');
@@ -12,10 +16,16 @@ exports.getCustomers = (req, res) => {
 };
 
 exports.getCustomer = (req, res) => {
-    Customer.findById(req.params.id)
+    const customerId = req.params.id;
+
+    if (!ObjectID.isValid(customerId)) {
+        return res.status(400).send();
+    }
+
+    Customer.findById(customerId)
         .then((customer) => {
             if (!customer) {
-                return res.status(400).send("Customer not found");
+                return res.status(404).send("Customer not found");
             }
 
             res.send(customer);
@@ -44,4 +54,54 @@ exports.postCustomer = (req, res) => {
             res.status(400);
         });
 
+};
+
+exports.updateCustomer = (req, res) => {
+    const customerId = req.params.id;
+    const body = _.pick(req.body, ["name", "phone"]);
+
+    if (!ObjectID.isValid(customerId)) {
+        return res.status(400).send();
+    }
+
+    Customer.findOne({ _id: customerId })
+        .then(customer => {
+            if (!customer) {
+                return res.status(404).send("Customer doesnt exist");                
+            }
+
+            if ((body.name) && (body.name.length > 3) && (typeof body.name === 'string')) {
+                customer.name = body.name
+            }
+
+            if ((body.phone) && (body.phone.length >= 10) && (typeof body.phone === 'string')) {
+                customer.phone = body.phone
+            }
+
+            return Customer.findOneAndUpdate({ _id: customerId }, {$set: customer}, { new: true });
+        }).then((updatedCustomer) => {
+            res.send(updatedCustomer);
+        }).catch((err) => {
+            res.status(400);            
+        });
+
+};
+
+exports.deleteCustomer = (req, res) => {
+    const customerId = req.params.id;
+
+    if (!ObjectID.isValid(customerId)) {
+        return res.status(400).send();
+    }
+
+    Customer.findOneAndRemove({_id: customerId})
+        .then((result) => {
+            if (!result) {
+                return res.status(400).send();                
+            }
+            
+            res.status(204).send();
+        }).catch((err) => {
+            res.status(400);
+        });
 };
