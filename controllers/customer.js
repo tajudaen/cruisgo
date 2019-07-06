@@ -87,3 +87,21 @@ exports.updateCustomer = (req, res) => {
 
 };
 
+exports.deleteCustomer = (req, res) => {
+    const customerId = req.params.id;
+
+    if (!ObjectID.isValid(customerId)) {
+        return res.status(400).send();
+    }
+
+    Customer.findOneAndRemove({_id: customerId})
+        .then((result) => {
+            if (!result) {
+                return res.status(400).send();                
+            }
+            
+            res.status(204).send();
+        }).catch((err) => {
+            res.status(400);
+        });
+};

@@ -105,4 +105,30 @@ describe('feat/customer', () => {
                 .end(done);
         });
     });
+
+    describe("DELETE:id customer", () => {
+        it("should delete a customer", done => {
+
+            request(app)
+                .delete(`/api/customers/${customers[0]._id.toHexString()}`)
+                .expect(204)
+                .end(done);
+        });
+
+        it('should return a 400 if customer is not found', done => {
+            const customerID = new ObjectID().toHexString();
+
+            request(app)
+                .delete(`/api/customers/${customerID}`)
+                .expect(400)
+                .end(done);
+        });
+
+        it('should return a 404 if customer id is not valid', done => {
+            request(app)
+                .delete('/api/customers/12345')
+                .expect(400)
+                .end(done);
+        });
+    });
 });
