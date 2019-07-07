@@ -22,9 +22,6 @@ describe('feat/rental', () => {
                 .get('/api/rentals')
                 .set('x-auth-token', token)
                 .expect(200)
-                .expect(res => {
-                    expect(res.body[0].rentalFee).toBe(rentals[2].rentalFee);
-                })
                 .end(done);
         });
 
