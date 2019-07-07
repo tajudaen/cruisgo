@@ -5,7 +5,7 @@ const { ObjectID } = require("mongodb");
 
 // Custom modules
 const { app } = require('../../app');
-const { seedRentals, rentals } = require('../seeds/seed');
+const { seedRentals, rentals, customers, cars } = require('../seeds/seed');
 const { User } = require('../../models/user');
 
 beforeEach(seedRentals);
@@ -22,9 +22,6 @@ describe('feat/rental', () => {
                 .get('/api/rentals')
                 .set('x-auth-token', token)
                 .expect(200)
-                .expect(res => {
-                    expect(res.body[0].rentalFee).toBe(rentals[2].rentalFee);
-                })
                 .end(done);
         });
 
@@ -36,6 +33,63 @@ describe('feat/rental', () => {
                 .get('/api/rentals')
                 .set('x-auth-token', token)
                 .expect(403)
+                .end(done);
+        });
+    });
+
+    describe('POST: rental', () => {
+        it('should create a rental resource', (done) => {
+            const rental = {
+                customerId: customers[0]._id.toHexString(),
+                carId: cars[0]._id.toHexString()
+            };
+
+            request(app)
+                .post('/api/rentals')
+                .send(rental)
+                .expect(200)
+                .expect(res => {
+                    expect(res.body.customer._id).toBe(customers[0]._id.toHexString())
+                })
+                .end(done);
+        });
+
+        it('should return a 400 if a customerId which doesnt exist is given', (done) => {
+            const rental = {
+                customerId: new ObjectID().toHexString(),
+                carId: cars[0]._id.toHexString()
+            };
+
+            request(app)
+                .post('/api/rentals')
+                .send(rental)
+                .expect(400)
+                .end(done);
+        });
+
+        it('should return a 400 if a carId which doesnt exist is given', (done) => {
+            const rental = {
+                customerId: customers[1]._id.toHexString(),
+                carId: new ObjectID().toHexString()
+            };
+
+            request(app)
+                .post('/api/rentals')
+                .send(rental)
+                .expect(400)
+                .end(done);
+        });
+
+        it('should return a 400 if car is not in stock', (done) => {
+            const rental = {
+                customerId: customers[0]._id.toHexString(),
+                carId: cars[1]._id.toHexString()
+            };
+
+            request(app)
+                .post('/api/rentals')
+                .send(rental)
+                .expect(400)
                 .end(done);
         });
     });
