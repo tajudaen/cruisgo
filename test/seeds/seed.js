@@ -49,7 +49,7 @@ const cars = [{
 {
     _id: new ObjectID(),
     name: "Mustang",
-    numberInStock: 5,
+    numberInStock: 0,
     dailyRentalRate: 40,
     category: categories[1],
     details: { brand: "Ford", model: "2015", color: "orange" }

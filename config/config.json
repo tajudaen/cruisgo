@@ -1,13 +1,13 @@
 {
     "test": {
         "PORT": 5000,
-        "MONGODB_URI": "mongodb://localhost:27017/CruiGo",
+        "MONGODB_URI": "mongodb://localhost:27017/CruiGo_test",
         "JWT_SECRET": "13291d8..cc261af",
         "SALT_ROUND": 5
     },
     "development": {
         "PORT": 3000,
-        "MONGODB_URI": "mongodb://localhost:27017/CruiGo_test",
+        "MONGODB_URI": "mongodb://localhost:27017/CruiGo",
         "JWT_SECRET": "13291d8..cc261af",
         "SALT_ROUND": 10
     }
