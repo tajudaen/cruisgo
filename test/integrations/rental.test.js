@@ -215,10 +215,7 @@ describe('feat/rental', () => {
 
             rental.save()
                 .then((result) => {
-                    result.dateOut = moment().add(-7, 'days').toDate();
-                    return result.save();
-                }).then(() => {
-
+                    
                 });
 
             const customerId = customers[0]._id.toHexString();
@@ -230,7 +227,7 @@ describe('feat/rental', () => {
                 .send({customerId, carId})
                 .expect(200)
                 .expect(res => {
-                    expect(res.body.rentalFee).toBe(420);
+                    expect(res.body.rentalFee).toBe(cars[2].dailyRentalRate);
                 })
                 .end(done);
         });
