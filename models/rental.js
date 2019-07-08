@@ -52,10 +52,11 @@ const rentalSchema = new mongoose.Schema({
 });
 
 rentalSchema.methods.return = function () {
-    this.dateReturned = new Date();
+    const rental = this;
+    rental.dateReturned = new Date();
 
-    const rentalDuration = moment().diff(this.dateOut, 'days');
-    this.rentalFee = rentalDuration * this.car.dailyRentalRate;
+    const rentalDuration = moment().diff(rental.dateOut, 'days');
+    rental.rentalFee = rentalDuration * rental.car.dailyRentalRate;
 }
 
 const Rental = mongoose.model('Rental', rentalSchema);
