@@ -55,7 +55,7 @@ rentalSchema.methods.return = function () {
     const rental = this;
     rental.dateReturned = new Date();
 
-    const rentalDuration = moment().diff(rental.dateOut, 'days');
+    const rentalDuration = (moment().diff(rental.dateOut, 'days') == 0) ? 1 : moment().diff(rental.dateOut, 'days');
     rental.rentalFee = rentalDuration * rental.car.dailyRentalRate;
 }
 

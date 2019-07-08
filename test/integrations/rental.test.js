@@ -216,7 +216,7 @@ describe('feat/rental', () => {
             rental.save()
                 .then((result) => {
                     result.dateOut = moment().add(-7, 'days').toDate();
-                    return Rental.findOneAndUpdate({_id: rental}, {$set: result}, {new: true});
+                    return result.save();
                 }).then(() => {
 
                 });

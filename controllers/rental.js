@@ -60,7 +60,7 @@ exports.postRental = (req, res) => {
                     name: customer.name,
                     phone: customer.phone
                 },
-                Car: {
+                car: {
                     _id: car._id,
                     name: car.name,
                     dailyRentalRate: car.dailyRentalRate
