@@ -53,6 +53,14 @@ const cars = [{
     dailyRentalRate: 40,
     category: categories[1],
     details: { brand: "Ford", model: "2015", color: "orange" }
+},
+{
+    _id: new ObjectID(),
+    name: "Bentley",
+    numberInStock: 4,
+    dailyRentalRate: 60,
+    category: categories[1],
+    details: { brand: "Kia", model: "2017", color: "blue" }
 }
 ];
 
@@ -74,8 +82,7 @@ const rentals = [{
         _id: cars[0]._id,
         name: cars[0].name,
         dailyRentalRate: cars[0].dailyRentalRate
-    },
-    rentalFee: 50
+    }
 }, {
     _id: new ObjectID(),
     customer: customers[0],
@@ -83,8 +90,7 @@ const rentals = [{
         _id: cars[1]._id,
         name: cars[1].name,
         dailyRentalRate: cars[1].dailyRentalRate
-    },
-    rentalFee: 60
+    }
 }, {
     _id: new ObjectID(),
     customer: customers[1],
@@ -92,8 +98,7 @@ const rentals = [{
         _id: cars[0]._id,
         name: cars[0].name,
         dailyRentalRate: cars[0].dailyRentalRate
-    },
-    rentalFee: 50
+    }
 }];
 
 const seedCategories = done => {
