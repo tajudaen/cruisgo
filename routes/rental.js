@@ -10,6 +10,8 @@ const { readAccess } = require('../middlewares/access-right');
 
 router.get('/', [authenticate, readAccess], rentalsController.getRentals);
 
-router.post('/', rentalsController.postRental);
+router.post('/', authenticate, rentalsController.postRental);
+
+router.post('/returns', authenticate, rentalsController.returns);
 
 module.exports = router;

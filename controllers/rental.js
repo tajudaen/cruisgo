@@ -60,7 +60,7 @@ exports.postRental = (req, res) => {
                     name: customer.name,
                     phone: customer.phone
                 },
-                Car: {
+                car: {
                     _id: car._id,
                     name: car.name,
                     dailyRentalRate: car.dailyRentalRate
@@ -80,3 +80,43 @@ exports.postRental = (req, res) => {
             res.status(500);
         });
 };
+
+exports.returns = (req, res) => {
+    const body = _.pick(req.body, ["customerId", "carId"]);
+
+    const { error } = validateRental(body);
+    if (error) {
+        const payLoad = [];
+        error.details.forEach(err => {
+            payLoad.push(err.message);
+        });
+
+        return res.status(400).send(payLoad);
+    }
+
+    let updatedRecord;
+
+    Rental.findOne({'customer._id': body.customerId, 'car._id': body.carId})
+        .then((rental) => {
+            if (!rental) {
+                return res.status(404).send('No record found');
+            }    
+
+            if (rental.dateReturned) {
+                return res.status(400).send();
+            }
+
+            rental.return();
+            
+            return rental.save();
+        }).then(result => {
+            updatedRecord = result;
+            const carId = result.car._id.toHexString();
+
+            return Car.findOneAndUpdate({_id: carId }, {$inc: {numberInStock: 1}}, {new: true});
+        }).then((result) => {
+            res.send(updatedRecord);
+        }).catch((err) => {
+            res.status(400).send();
+        });
+}

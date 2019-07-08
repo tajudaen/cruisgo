@@ -1,7 +1,8 @@
 // Packages
 const mongoose = require('mongoose');
+const moment = require('moment');
 
-exports.Rental = mongoose.model('Rental', {
+const rentalSchema = new mongoose.Schema({
     customer: {
         type: new mongoose.Schema({
             name: {
@@ -49,3 +50,13 @@ exports.Rental = mongoose.model('Rental', {
         min: 0
     }
 });
+
+rentalSchema.methods.return = function () {
+    const rental = this;
+    rental.dateReturned = new Date();
+
+    const rentalDuration = (moment().diff(rental.dateOut, 'days') == 0) ? 1 : moment().diff(rental.dateOut, 'days');
+    rental.rentalFee = rentalDuration * rental.car.dailyRentalRate;
+}
+
+exports.Rental = mongoose.model('Rental', rentalSchema);
