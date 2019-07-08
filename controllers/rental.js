@@ -108,10 +108,7 @@ exports.returns = (req, res) => {
 
             rental.return();
             
-            const rentalId = rental._id;
-
-            return Rental.findOneAndUpdate({_id: rentalId }, {$set: rental}, {new: true});
-
+            return rental.save();
         }).then(result => {
             updatedRecord = result;
             const carId = result.car._id.toHexString();

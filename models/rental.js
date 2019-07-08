@@ -59,8 +59,4 @@ rentalSchema.methods.return = function () {
     rental.rentalFee = rentalDuration * rental.car.dailyRentalRate;
 }
 
-const Rental = mongoose.model('Rental', rentalSchema);
-
-module.exports = {
-    Rental
-}
+exports.Rental = mongoose.model('Rental', rentalSchema);
